@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HelloWorld</string>
+    <string name="hint_instructions">Toca la pantalla para cambiar de saludo · Agita el dispositivo para uno aleatorio</string>
 </resources>

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">reto 3</string>
+    <string name="action_new_game">Nueva partida</string>
 </resources>

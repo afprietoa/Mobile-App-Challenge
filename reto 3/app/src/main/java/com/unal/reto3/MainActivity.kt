@@ -2,9 +2,13 @@ package com.unal.reto3
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.unal.reto3.databinding.ActivityMainBinding
@@ -33,6 +37,18 @@ class MainActivity : AppCompatActivity() {
             binding.button3, binding.button4, binding.button5,
             binding.button6, binding.button7, binding.button8
         )
+
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.main_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                if (menuItem.itemId != R.id.action_new_game) return false
+                startNewGame()
+                return true
+            }
+        })
 
         startNewGame()
     }

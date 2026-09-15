@@ -23,22 +23,22 @@ class MainActivityTest {
 
     @Test
     fun tappingBoardButton_showsXAndDisablesButton() {
-        onView(withId(R.id.button0)).perform(click())
+        onView(withId(R.id.button_0)).perform(click())
 
-        onView(withId(R.id.button0))
+        onView(withId(R.id.button_0))
             .check(matches(withText("X")))
             .check(matches(not(isEnabled())))
     }
 
     @Test
     fun newGameMenuItem_clearsBoard() {
-        onView(withId(R.id.button0)).perform(click())
+        onView(withId(R.id.button_0)).perform(click())
 
         openActionBarOverflowOrOptionsMenu(
             InstrumentationRegistry.getInstrumentation().targetContext
         )
         onView(withText(R.string.action_new_game)).perform(click())
 
-        onView(withId(R.id.button0)).check(matches(withText("")))
+        onView(withId(R.id.button_0)).check(matches(withText("")))
     }
 }

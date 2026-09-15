@@ -1,6 +1,5 @@
 package com.unal.reto3
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -8,6 +7,7 @@ import android.view.MenuItem
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener { onBoardButtonClicked(index) }
         }
 
-        binding.information.text = "Tu turno."
+        binding.information.text = getString(R.string.first_human)
     }
 
     // Maneja el toque del humano sobre una casilla y, si el juego continúa, responde el computador.
@@ -75,14 +75,14 @@ class MainActivity : AppCompatActivity() {
         var winner = game.checkForWinner()
 
         if (winner == TicTacToeGame.RESULT_NONE) {
-            binding.information.text = "Turno de Android."
+            binding.information.text = getString(R.string.turn_computer)
             val move = game.getComputerMove()
             setMove(TicTacToeGame.COMPUTER_PLAYER, move)
             winner = game.checkForWinner()
         }
 
         if (winner == TicTacToeGame.RESULT_NONE) {
-            binding.information.text = "Tu turno."
+            binding.information.text = getString(R.string.turn_human)
         } else {
             endGame(winner)
         }
@@ -95,8 +95,10 @@ class MainActivity : AppCompatActivity() {
             isEnabled = false
             text = player.toString()
             setTextColor(
-                if (player == TicTacToeGame.HUMAN_PLAYER) Color.rgb(0, 200, 0)
-                else Color.rgb(200, 0, 0)
+                ContextCompat.getColor(
+                    context,
+                    if (player == TicTacToeGame.HUMAN_PLAYER) R.color.x_color else R.color.o_color
+                )
             )
         }
     }
@@ -107,9 +109,9 @@ class MainActivity : AppCompatActivity() {
         boardButtons.forEach { it.isEnabled = false }
 
         binding.information.text = when (result) {
-            TicTacToeGame.RESULT_TIE -> "Empate."
-            TicTacToeGame.RESULT_HUMAN_WON -> "¡Ganaste!"
-            else -> "Android ganó."
+            TicTacToeGame.RESULT_TIE -> getString(R.string.result_tie)
+            TicTacToeGame.RESULT_HUMAN_WON -> getString(R.string.result_human_wins)
+            else -> getString(R.string.result_computer_wins)
         }
     }
 }

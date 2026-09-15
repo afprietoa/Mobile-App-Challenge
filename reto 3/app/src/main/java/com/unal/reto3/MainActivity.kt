@@ -18,7 +18,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var boardButtons: Array<Button>
     private val game = TicTacToeGame()
+
     private var gameOver = false
+    private var humanGoesFirst = true
+    private var humanWins = 0
+    private var computerWins = 0
+    private var ties = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +58,8 @@ class MainActivity : AppCompatActivity() {
         startNewGame()
     }
 
-    // Prepara un tablero nuevo: limpia el modelo, resetea los botones y engancha los clicks.
+    // Prepara un tablero nuevo. Alterna quién empieza respecto a la partida anterior
+    // y actualiza el marcador visible.
     private fun startNewGame() {
         game.clearBoard()
         gameOver = false
@@ -64,7 +70,17 @@ class MainActivity : AppCompatActivity() {
             button.setOnClickListener { onBoardButtonClicked(index) }
         }
 
-        binding.information.text = getString(R.string.first_human)
+        updateScoreboard()
+
+        if (humanGoesFirst) {
+            binding.information.text = getString(R.string.first_human)
+        } else {
+            binding.information.text = getString(R.string.turn_computer)
+            val move = game.getComputerMove()
+            setMove(TicTacToeGame.COMPUTER_PLAYER, move)
+            binding.information.text = getString(R.string.turn_human)
+        }
+        humanGoesFirst = !humanGoesFirst
     }
 
     // Maneja el toque del humano sobre una casilla y, si el juego continúa, responde el computador.
@@ -103,15 +119,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Marca la partida como terminada, deshabilita todo el tablero y muestra el resultado.
+    // Marca la partida como terminada, actualiza los contadores y el marcador.
     private fun endGame(result: Int) {
         gameOver = true
         boardButtons.forEach { it.isEnabled = false }
 
         binding.information.text = when (result) {
-            TicTacToeGame.RESULT_TIE -> getString(R.string.result_tie)
-            TicTacToeGame.RESULT_HUMAN_WON -> getString(R.string.result_human_wins)
-            else -> getString(R.string.result_computer_wins)
+            TicTacToeGame.RESULT_TIE -> {
+                ties++
+                getString(R.string.result_tie)
+            }
+            TicTacToeGame.RESULT_HUMAN_WON -> {
+                humanWins++
+                getString(R.string.result_human_wins)
+            }
+            else -> {
+                computerWins++
+                getString(R.string.result_computer_wins)
+            }
         }
+        updateScoreboard()
+    }
+
+    private fun updateScoreboard() {
+        binding.scoreHuman.text = getString(R.string.score_human_format, humanWins)
+        binding.scoreTies.text = getString(R.string.score_ties_format, ties)
+        binding.scoreComputer.text = getString(R.string.score_computer_format, computerWins)
     }
 }

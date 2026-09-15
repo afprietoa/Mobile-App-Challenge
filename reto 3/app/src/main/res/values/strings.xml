@@ -8,4 +8,8 @@
     <string name="result_tie">Empate.</string>
     <string name="result_human_wins">¡Ganaste!</string>
     <string name="result_computer_wins">Android ganó.</string>
+
+    <string name="score_human_format">Humano: %d</string>
+    <string name="score_ties_format">Empates: %d</string>
+    <string name="score_computer_format">Android: %d</string>
 </resources>

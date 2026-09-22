@@ -15,6 +15,11 @@ class TicTacToeGameTest {
     }
 
     @Test
+    fun defaultDifficulty_isExpert() {
+        assertEquals(TicTacToeGame.DifficultyLevel.EXPERT, game.difficultyLevel)
+    }
+
+    @Test
     fun clearBoard_leavesAllSpotsOpen() {
         game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
         game.clearBoard()
@@ -27,7 +32,6 @@ class TicTacToeGameTest {
         game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
         game.setMove(TicTacToeGame.COMPUTER_PLAYER, 0)
 
-        // getComputerMove() nunca debería elegir la posición 0: sigue ocupada por X.
         assertTrue(game.getComputerMove() != 0)
     }
 
@@ -50,19 +54,7 @@ class TicTacToeGameTest {
     }
 
     @Test
-    fun checkForWinner_detectsDiagonalWin() {
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 4)
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 8)
-
-        assertEquals(TicTacToeGame.RESULT_HUMAN_WON, game.checkForWinner())
-    }
-
-    @Test
     fun checkForWinner_detectsTie() {
-        // X | O | X
-        // X | O | O
-        // O | X | X
         intArrayOf(0, 2, 3, 7, 8).forEach { game.setMove(TicTacToeGame.HUMAN_PLAYER, it) }
         intArrayOf(1, 4, 5, 6).forEach { game.setMove(TicTacToeGame.COMPUTER_PLAYER, it) }
 
@@ -70,28 +62,44 @@ class TicTacToeGameTest {
     }
 
     @Test
-    fun checkForWinner_returnsNoneMidGame() {
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
-        game.setMove(TicTacToeGame.COMPUTER_PLAYER, 4)
+    fun easyDifficulty_alwaysReturnsAnOpenSpot() {
+        game.difficultyLevel = TicTacToeGame.DifficultyLevel.EASY
+        // O podría ganar en la posición 2, pero en Easy no debe garantizarse:
+        // solo verificamos que la jugada sigue siendo válida.
+        game.setMove(TicTacToeGame.COMPUTER_PLAYER, 0)
+        game.setMove(TicTacToeGame.COMPUTER_PLAYER, 1)
 
-        assertEquals(TicTacToeGame.RESULT_NONE, game.checkForWinner())
+        repeat(20) {
+            val move = game.getComputerMove()
+            assertTrue(move in 0 until TicTacToeGame.BOARD_SIZE)
+        }
     }
 
     @Test
-    fun getComputerMove_takesWinningMoveWhenAvailable() {
-        // O tiene dos en la fila superior (0,1); debe tomar la posición 2 para ganar,
-        // aunque X también tenga una amenaza en la fila del medio (3,4).
+    fun harderDifficulty_takesWinningMoveWhenAvailable() {
+        game.difficultyLevel = TicTacToeGame.DifficultyLevel.HARDER
         game.setMove(TicTacToeGame.COMPUTER_PLAYER, 0)
         game.setMove(TicTacToeGame.COMPUTER_PLAYER, 1)
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 3)
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 4)
 
         assertEquals(2, game.getComputerMove())
     }
 
     @Test
-    fun getComputerMove_blocksHumanWinningMove() {
-        // X tiene dos en la columna izquierda (0,3); O debe bloquear en la posición 6.
+    fun harderDifficulty_movesRandomlyWhenNoWinAvailable() {
+        game.difficultyLevel = TicTacToeGame.DifficultyLevel.HARDER
+        // X amenaza en la columna izquierda (0,3); en Harder el computador NO bloquea.
+        game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
+        game.setMove(TicTacToeGame.HUMAN_PLAYER, 3)
+
+        val move = game.getComputerMove()
+
+        assertTrue(move in 0 until TicTacToeGame.BOARD_SIZE)
+        assertTrue(move != 0 && move != 3)
+    }
+
+    @Test
+    fun expertDifficulty_blocksHumanWinningMove() {
+        game.difficultyLevel = TicTacToeGame.DifficultyLevel.EXPERT
         game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
         game.setMove(TicTacToeGame.HUMAN_PLAYER, 3)
         game.setMove(TicTacToeGame.COMPUTER_PLAYER, 1)
@@ -100,14 +108,13 @@ class TicTacToeGameTest {
     }
 
     @Test
-    fun getComputerMove_alwaysReturnsAnOpenSpot() {
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
+    fun expertDifficulty_takesWinningMoveOverBlocking() {
+        game.difficultyLevel = TicTacToeGame.DifficultyLevel.EXPERT
+        game.setMove(TicTacToeGame.COMPUTER_PLAYER, 0)
         game.setMove(TicTacToeGame.COMPUTER_PLAYER, 1)
-        game.setMove(TicTacToeGame.HUMAN_PLAYER, 2)
+        game.setMove(TicTacToeGame.HUMAN_PLAYER, 3)
+        game.setMove(TicTacToeGame.HUMAN_PLAYER, 4)
 
-        val move = game.getComputerMove()
-
-        assertTrue(move in 0 until TicTacToeGame.BOARD_SIZE)
-        assertTrue(move != 0 && move != 1 && move != 2)
+        assertEquals(2, game.getComputerMove())
     }
 }

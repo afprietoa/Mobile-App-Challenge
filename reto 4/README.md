@@ -1,28 +1,32 @@
-# Reto 3 — Tic-Tac-Toe
+# Reto 4 — Menús y Dialog Boxes
 
-Juego de tres en raya para Android, escrito en Kotlin, basado en el tutorial
-"Tic-Tac-Toe for Android" de Frank McCown (Harding University).
+Continuación del Reto 3 (tres en raya): añade un menú de opciones completo y
+varios cuadros de diálogo, basado en el tutorial "Menus and Dialog Boxes" de
+Frank McCown (Harding University).
 
-## Reglas
+## Menú
 
-- El humano juega con **X** (verde) y el computador (Android) con **O** (rojo).
-- En la primera partida empieza el humano; a partir de ahí, quién empieza
-  alterna en cada partida nueva.
-- Gana quien complete una fila, columna o diagonal. Si se llena el tablero
-  sin un ganador, es empate.
+- **Nueva partida** — reinicia el tablero, igual que en el Reto 3.
+- **Dificultad** — abre un diálogo con radio buttons (Fácil / Difícil / Experto)
+  para cambiar el nivel de la IA en cualquier momento.
+- **Acerca de** — muestra un diálogo con el ícono de la app y una breve
+  descripción del juego.
+- **Salir** — pide confirmación (Sí/No) antes de cerrar la app.
 
-## Cómo juega el computador
+## Niveles de dificultad
 
-`TicTacToeGame.getComputerMove()` sigue esta prioridad:
-1. Si el computador puede ganar en su siguiente jugada, la hace.
-2. Si no, y el humano podría ganar en su siguiente jugada, el computador bloquea esa posición.
-3. Si ninguna de las anteriores aplica, elige una posición libre al azar.
+`TicTacToeGame.getComputerMove()` según `difficultyLevel`:
+- **Fácil**: siempre mueve al azar.
+- **Difícil**: gana si puede; si no, mueve al azar (no bloquea al humano).
+- **Experto** (por defecto): gana si puede; si no, bloquea al humano; si no,
+  mueve al azar.
 
 ## Cómo jugar
 
 - Toca una casilla libre para colocar tu X; el computador responde automáticamente.
 - El marcador bajo el tablero lleva la cuenta de partidas ganadas por cada lado y empates.
-- Usa el menú (⋮ arriba a la derecha) → **Nueva partida** para reiniciar el tablero en cualquier momento.
+- Usa el menú (⋮ arriba a la derecha) para cambiar la dificultad, ver "Acerca de",
+  empezar una nueva partida o salir.
 
 ## Cómo correr las pruebas
 
@@ -33,8 +37,8 @@ Juego de tres en raya para Android, escrito en Kotlin, basado en el tutorial
 
 ## Notas de implementación
 
-- Se usa `ViewBinding` para acceder a las vistas y un `MenuProvider` para el menú
-  "Nueva partida" (`onCreateOptionsMenu`/`onOptionsItemSelected` están deprecados).
-- AGP 9.4.0 integra soporte de Kotlin de forma nativa en `com.android.application`;
-  no hace falta aplicar el plugin `org.jetbrains.kotlin.android` por separado
-  (aplicarlo además falla con `Cannot add extension with name 'kotlin'`).
+- Los diálogos se construyen con `AlertDialog.Builder` directamente desde el
+  `MenuProvider`, no con `Activity.onCreateDialog(int)`/`showDialog(int)`
+  (deprecados) del tutorial original.
+- El ícono de la app es un adaptive icon vectorial (grid + X/O) en vez de un
+  `icon.png` estático.

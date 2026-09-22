@@ -61,6 +61,10 @@ class MainActivity : AppCompatActivity() {
                         showDifficultyDialog()
                         true
                     }
+                    R.id.action_about -> {
+                        showAboutDialog()
+                        true
+                    }
                     R.id.action_quit -> {
                         showQuitDialog()
                         true
@@ -100,6 +104,15 @@ class MainActivity : AppCompatActivity() {
             .setCancelable(false)
             .setPositiveButton(R.string.yes) { _, _ -> finish() }
             .setNegativeButton(R.string.no, null)
+            .show()
+    }
+
+    // Infla dialog_about.xml y lo muestra dentro de un AlertDialog con un único botón OK.
+    private fun showAboutDialog() {
+        val view = layoutInflater.inflate(R.layout.dialog_about, null)
+        AlertDialog.Builder(this)
+            .setView(view)
+            .setPositiveButton(R.string.ok, null)
             .show()
     }
 

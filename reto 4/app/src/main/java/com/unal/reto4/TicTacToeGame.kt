@@ -3,13 +3,18 @@ package com.unal.reto4
 import kotlin.random.Random
 
 /**
- * Lógica pura del juego: estado del tablero, reglas y una IA simple
- * (gana si puede, bloquea si el humano puede ganar, si no, mueve al azar).
+ * Lógica pura del juego: estado del tablero, reglas y una IA cuya fuerza
+ * depende de [difficultyLevel].
  */
 class TicTacToeGame {
 
+    enum class DifficultyLevel { EASY, HARDER, EXPERT }
+
     private val board = CharArray(BOARD_SIZE) { OPEN_SPOT }
     private val random = Random(System.currentTimeMillis())
+
+    /** Nivel de dificultad actual del computador. Por defecto, el más fuerte. */
+    var difficultyLevel: DifficultyLevel = DifficultyLevel.EXPERT
 
     /** Vacía el tablero, dejando todas las posiciones en OPEN_SPOT. */
     fun clearBoard() {
@@ -24,13 +29,18 @@ class TicTacToeGame {
     }
 
     /**
-     * Devuelve la mejor jugada para el computador (0-8).
+     * Devuelve la mejor jugada para el computador (0-8) según [difficultyLevel]:
+     * - EASY: siempre una jugada al azar.
+     * - HARDER: gana si puede; si no, al azar.
+     * - EXPERT: gana si puede; si no, bloquea al humano; si no, al azar.
+     *
      * No mueve por sí sola: hay que llamar a [setMove] con el resultado.
      */
-    fun getComputerMove(): Int {
-        return getWinningMove(COMPUTER_PLAYER)
-            ?: getWinningMove(HUMAN_PLAYER)
-            ?: getRandomOpenMove()
+    fun getComputerMove(): Int = when (difficultyLevel) {
+        DifficultyLevel.EASY -> getRandomOpenMove()
+        DifficultyLevel.HARDER -> getWinningMove(COMPUTER_PLAYER) ?: getRandomOpenMove()
+        DifficultyLevel.EXPERT ->
+            getWinningMove(COMPUTER_PLAYER) ?: getWinningMove(HUMAN_PLAYER) ?: getRandomOpenMove()
     }
 
     /**
@@ -46,7 +56,11 @@ class TicTacToeGame {
         return if (board.any { it == OPEN_SPOT }) RESULT_NONE else RESULT_TIE
     }
 
-    /** Busca una línea donde [player] tenga 2 marcas y 1 hueco; devuelve ese hueco o null. */
+    /**
+     * Busca una línea donde [player] tenga 2 marcas y 1 hueco; devuelve ese hueco o null.
+     * Llamarla con COMPUTER_PLAYER encuentra una jugada ganadora; llamarla con
+     * HUMAN_PLAYER encuentra la jugada que bloquea al humano (misma lógica).
+     */
     private fun getWinningMove(player: Char): Int? {
         for ((a, b, c) in WINNING_LINES) {
             val line = intArrayOf(a, b, c)

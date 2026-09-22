@@ -6,6 +6,10 @@
     <string name="difficulty_easy">Fácil</string>
     <string name="difficulty_harder">Difícil</string>
     <string name="difficulty_expert">Experto</string>
+    <string name="action_quit">Salir</string>
+    <string name="quit_question">¿Seguro que quieres salir?</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
 
     <string name="first_human">Tú empiezas.</string>
     <string name="turn_human">Tu turno.</string>

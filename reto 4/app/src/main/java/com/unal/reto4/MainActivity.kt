@@ -61,6 +61,10 @@ class MainActivity : AppCompatActivity() {
                         showDifficultyDialog()
                         true
                     }
+                    R.id.action_quit -> {
+                        showQuitDialog()
+                        true
+                    }
                     else -> false
                 }
             }
@@ -86,6 +90,16 @@ class MainActivity : AppCompatActivity() {
                 game.difficultyLevel = TicTacToeGame.DifficultyLevel.entries[which]
                 Toast.makeText(this, levels[which], Toast.LENGTH_SHORT).show()
             }
+            .show()
+    }
+
+    // Pide confirmación antes de cerrar la Activity; "No" simplemente cierra el diálogo.
+    private fun showQuitDialog() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.quit_question)
+            .setCancelable(false)
+            .setPositiveButton(R.string.yes) { _, _ -> finish() }
+            .setNegativeButton(R.string.no, null)
             .show()
     }
 

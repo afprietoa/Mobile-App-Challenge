@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">reto 4</string>
+    <string name="action_new_game">Nueva partida</string>
+
+    <string name="first_human">Tú empiezas.</string>
+    <string name="turn_human">Tu turno.</string>
+    <string name="turn_computer">Turno de Android.</string>
+    <string name="result_tie">Empate.</string>
+    <string name="result_human_wins">¡Ganaste!</string>
+    <string name="result_computer_wins">Android ganó.</string>
+
+    <string name="score_human_format">Humano: %d</string>
+    <string name="score_ties_format">Empates: %d</string>
+    <string name="score_computer_format">Android: %d</string>
+</resources>

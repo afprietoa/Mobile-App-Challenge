@@ -5,7 +5,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
@@ -50,13 +52,41 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if (menuItem.itemId != R.id.action_new_game) return false
-                startNewGame()
-                return true
+                return when (menuItem.itemId) {
+                    R.id.action_new_game -> {
+                        startNewGame()
+                        true
+                    }
+                    R.id.action_difficulty -> {
+                        showDifficultyDialog()
+                        true
+                    }
+                    else -> false
+                }
             }
         })
 
         startNewGame()
+    }
+
+    // Muestra un diálogo de selección única con los niveles de dificultad;
+    // la opción marcada de entrada es el nivel actual del juego.
+    private fun showDifficultyDialog() {
+        val levels = arrayOf(
+            getString(R.string.difficulty_easy),
+            getString(R.string.difficulty_harder),
+            getString(R.string.difficulty_expert)
+        )
+        val selected = game.difficultyLevel.ordinal
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.difficulty_choose)
+            .setSingleChoiceItems(levels, selected) { dialog, which ->
+                dialog.dismiss()
+                game.difficultyLevel = TicTacToeGame.DifficultyLevel.entries[which]
+                Toast.makeText(this, levels[which], Toast.LENGTH_SHORT).show()
+            }
+            .show()
     }
 
     // Prepara un tablero nuevo. Alterna quién empieza respecto a la partida anterior

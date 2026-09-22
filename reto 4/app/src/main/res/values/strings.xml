@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">reto 4</string>
     <string name="action_new_game">Nueva partida</string>
+    <string name="action_difficulty">Dificultad</string>
+    <string name="difficulty_choose">Elige un nivel de dificultad</string>
+    <string name="difficulty_easy">Fácil</string>
+    <string name="difficulty_harder">Difícil</string>
+    <string name="difficulty_expert">Experto</string>
 
     <string name="first_human">Tú empiezas.</string>
     <string name="turn_human">Tu turno.</string>

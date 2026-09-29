@@ -3,6 +3,8 @@ package com.unal.reto5
 import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -31,6 +33,11 @@ class MainActivity : AppCompatActivity() {
     private var humanPlayer: MediaPlayer? = null
     private var computerPlayer: MediaPlayer? = null
     private var soundEnabled = true
+
+    // true mientras el computador "piensa": los toques del humano se ignoran.
+    private var computerTurn = false
+    private val handler = Handler(Looper.getMainLooper())
+    private val computerMoveRunnable = Runnable { makeComputerMove() }
 
     // Convierte el punto tocado en una casilla (0-8). Solo reacciona al primer contacto del dedo
     // (ACTION_DOWN) y devuelve false para no recibir los eventos MOVE/UP, como pide el tutorial.
@@ -158,11 +165,13 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    // Prepara un tablero nuevo. Alterna quién empieza respecto a la partida anterior
-    // y actualiza el marcador visible.
+    // Prepara un tablero nuevo. Cancela cualquier jugada pendiente del computador, alterna
+    // quién empieza respecto a la partida anterior y actualiza el marcador visible.
     private fun startNewGame() {
+        handler.removeCallbacks(computerMoveRunnable)
         game.clearBoard()
         gameOver = false
+        computerTurn = false
         binding.board.invalidate() // Redibuja el tablero vacío
 
         updateScoreboard()
@@ -170,25 +179,37 @@ class MainActivity : AppCompatActivity() {
         if (humanGoesFirst) {
             binding.information.text = getString(R.string.first_human)
         } else {
-            binding.information.text = getString(R.string.turn_computer)
-            setMove(TicTacToeGame.COMPUTER_PLAYER, game.getComputerMove())
-            binding.information.text = getString(R.string.turn_human)
+            scheduleComputerMove()
         }
         humanGoesFirst = !humanGoesFirst
     }
 
-    // Maneja el toque del humano sobre una casilla y, si el juego continúa, responde el computador.
+    // Maneja el toque del humano; ignora el toque si el juego terminó, si es turno del
+    // computador o si la casilla ya está ocupada.
     private fun onBoardTouched(location: Int) {
-        if (gameOver || !setMove(TicTacToeGame.HUMAN_PLAYER, location)) return
+        if (gameOver || computerTurn || !setMove(TicTacToeGame.HUMAN_PLAYER, location)) return
 
-        var winner = game.checkForWinner()
-
+        val winner = game.checkForWinner()
         if (winner == TicTacToeGame.RESULT_NONE) {
-            binding.information.text = getString(R.string.turn_computer)
-            setMove(TicTacToeGame.COMPUTER_PLAYER, game.getComputerMove())
-            winner = game.checkForWinner()
+            scheduleComputerMove()
+        } else {
+            endGame(winner)
         }
+    }
 
+    // Anuncia el turno de Android y programa su jugada dentro de COMPUTER_MOVE_DELAY_MS,
+    // sin bloquear el hilo de UI.
+    private fun scheduleComputerMove() {
+        computerTurn = true
+        binding.information.text = getString(R.string.turn_computer)
+        handler.postDelayed(computerMoveRunnable, COMPUTER_MOVE_DELAY_MS)
+    }
+
+    private fun makeComputerMove() {
+        setMove(TicTacToeGame.COMPUTER_PLAYER, game.getComputerMove())
+        computerTurn = false
+
+        val winner = game.checkForWinner()
         if (winner == TicTacToeGame.RESULT_NONE) {
             binding.information.text = getString(R.string.turn_human)
         } else {
@@ -238,5 +259,9 @@ class MainActivity : AppCompatActivity() {
         binding.scoreHuman.text = getString(R.string.score_human_format, humanWins)
         binding.scoreTies.text = getString(R.string.score_ties_format, ties)
         binding.scoreComputer.text = getString(R.string.score_computer_format, computerWins)
+    }
+
+    private companion object {
+        const val COMPUTER_MOVE_DELAY_MS = 1000L
     }
 }

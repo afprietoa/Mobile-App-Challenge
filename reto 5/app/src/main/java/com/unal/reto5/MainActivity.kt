@@ -112,14 +112,18 @@ class MainActivity : AppCompatActivity() {
 
     // Los MediaPlayer consumen recursos compartidos del sistema: se crean al volver a primer
     // plano y se liberan al salir de él. create() puede devolver null, por eso son nulables.
+    // Si quedó un turno del computador pendiente, se cancela al pausar y se retoma al volver.
     override fun onResume() {
         super.onResume()
         humanPlayer = MediaPlayer.create(applicationContext, R.raw.human_move)
         computerPlayer = MediaPlayer.create(applicationContext, R.raw.computer_move)
+
+        if (computerTurn && !gameOver) scheduleComputerMove()
     }
 
     override fun onPause() {
         super.onPause()
+        handler.removeCallbacks(computerMoveRunnable)
         humanPlayer?.release()
         computerPlayer?.release()
         humanPlayer = null

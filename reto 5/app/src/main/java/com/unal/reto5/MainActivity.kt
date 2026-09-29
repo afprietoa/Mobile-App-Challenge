@@ -1,9 +1,12 @@
 package com.unal.reto5
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
@@ -24,6 +27,21 @@ class MainActivity : AppCompatActivity() {
     private var computerWins = 0
     private var ties = 0
 
+    // Convierte el punto tocado en una casilla (0-8). Solo reacciona al primer contacto del dedo
+    // (ACTION_DOWN) y devuelve false para no recibir los eventos MOVE/UP, como pide el tutorial.
+    private val boardTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val board = binding.board
+            if (board.boardCellWidth > 0 && board.boardCellHeight > 0) {
+                val col = (event.x / board.boardCellWidth).toInt().coerceIn(0, 2)
+                val row = (event.y / board.boardCellHeight).toInt().coerceIn(0, 2)
+                onBoardTouched(row * 3 + col)
+            }
+        }
+        false
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,6 +56,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.board.game = game
+        binding.board.setOnTouchListener(boardTouchListener)
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {

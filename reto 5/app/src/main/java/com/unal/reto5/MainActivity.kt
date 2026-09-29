@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -18,7 +16,6 @@ import com.unal.reto5.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var boardButtons: Array<Button>
     private val game = TicTacToeGame()
 
     private var gameOver = false
@@ -40,11 +37,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        boardButtons = arrayOf(
-            binding.button0, binding.button1, binding.button2,
-            binding.button3, binding.button4, binding.button5,
-            binding.button6, binding.button7, binding.button8
-        )
+        binding.board.game = game
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -121,12 +114,7 @@ class MainActivity : AppCompatActivity() {
     private fun startNewGame() {
         game.clearBoard()
         gameOver = false
-
-        boardButtons.forEachIndexed { index, button ->
-            button.text = ""
-            button.isEnabled = true
-            button.setOnClickListener { onBoardButtonClicked(index) }
-        }
+        binding.board.invalidate() // Redibuja el tablero vacío
 
         updateScoreboard()
 
@@ -134,24 +122,21 @@ class MainActivity : AppCompatActivity() {
             binding.information.text = getString(R.string.first_human)
         } else {
             binding.information.text = getString(R.string.turn_computer)
-            val move = game.getComputerMove()
-            setMove(TicTacToeGame.COMPUTER_PLAYER, move)
+            setMove(TicTacToeGame.COMPUTER_PLAYER, game.getComputerMove())
             binding.information.text = getString(R.string.turn_human)
         }
         humanGoesFirst = !humanGoesFirst
     }
 
     // Maneja el toque del humano sobre una casilla y, si el juego continúa, responde el computador.
-    private fun onBoardButtonClicked(location: Int) {
-        if (gameOver || !boardButtons[location].isEnabled) return
+    private fun onBoardTouched(location: Int) {
+        if (gameOver || !setMove(TicTacToeGame.HUMAN_PLAYER, location)) return
 
-        setMove(TicTacToeGame.HUMAN_PLAYER, location)
         var winner = game.checkForWinner()
 
         if (winner == TicTacToeGame.RESULT_NONE) {
             binding.information.text = getString(R.string.turn_computer)
-            val move = game.getComputerMove()
-            setMove(TicTacToeGame.COMPUTER_PLAYER, move)
+            setMove(TicTacToeGame.COMPUTER_PLAYER, game.getComputerMove())
             winner = game.checkForWinner()
         }
 
@@ -162,25 +147,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Actualiza el modelo y el botón correspondiente: texto, color y estado deshabilitado.
-    private fun setMove(player: Char, location: Int) {
-        game.setMove(player, location)
-        boardButtons[location].apply {
-            isEnabled = false
-            text = player.toString()
-            setTextColor(
-                ContextCompat.getColor(
-                    context,
-                    if (player == TicTacToeGame.HUMAN_PLAYER) R.color.x_color else R.color.o_color
-                )
-            )
-        }
+    // Aplica la jugada al modelo y, si fue legal, pide redibujar el tablero.
+    private fun setMove(player: Char, location: Int): Boolean {
+        if (!game.setMove(player, location)) return false
+        binding.board.invalidate()
+        return true
     }
 
     // Marca la partida como terminada, actualiza los contadores y el marcador.
     private fun endGame(result: Int) {
         gameOver = true
-        boardButtons.forEach { it.isEnabled = false }
 
         binding.information.text = when (result) {
             TicTacToeGame.RESULT_TIE -> {

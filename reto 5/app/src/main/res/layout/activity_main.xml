@@ -17,84 +17,11 @@
         android:theme="?attr/actionBarTheme"
         app:title="@string/app_name" />
 
-    <TableLayout
-        android:id="@+id/play_grid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
-
-        <TableRow android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/button_0"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_1"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_2"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-        </TableRow>
-
-        <TableRow android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/button_3"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_4"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_5"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-        </TableRow>
-
-        <TableRow android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/button_6"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_7"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-
-            <Button
-                android:id="@+id/button_8"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:text=""
-                android:textSize="40sp" />
-        </TableRow>
-    </TableLayout>
+    <com.unal.reto5.BoardView
+        android:id="@+id/board"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="24dp" />
 
     <TextView
         android:id="@+id/information"

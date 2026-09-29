@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
     private var humanPlayer: MediaPlayer? = null
     private var computerPlayer: MediaPlayer? = null
+    private var soundEnabled = true
 
     // Convierte el punto tocado en una casilla (0-8). Solo reacciona al primer contacto del dedo
     // (ACTION_DOWN) y devuelve false para no recibir los eventos MOVE/UP, como pide el tutorial.
@@ -67,6 +68,10 @@ class MainActivity : AppCompatActivity() {
                 menuInflater.inflate(R.menu.main_menu, menu)
             }
 
+            override fun onPrepareMenu(menu: Menu) {
+                menu.findItem(R.id.action_sound)?.isChecked = soundEnabled
+            }
+
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_new_game -> {
@@ -75,6 +80,11 @@ class MainActivity : AppCompatActivity() {
                     }
                     R.id.action_difficulty -> {
                         showDifficultyDialog()
+                        true
+                    }
+                    R.id.action_sound -> {
+                        soundEnabled = !soundEnabled
+                        menuItem.isChecked = soundEnabled
                         true
                     }
                     R.id.action_about -> {
@@ -196,6 +206,7 @@ class MainActivity : AppCompatActivity() {
 
     // Reinicia el clip (seekTo(0)) para que vuelva a sonar aunque el anterior no haya terminado.
     private fun playSound(player: MediaPlayer?) {
+        if (!soundEnabled) return
         player?.apply {
             seekTo(0)
             start()

@@ -91,6 +91,16 @@ class MainActivityTest {
     }
 
     @Test
+    fun soundMenuItem_canBeToggled() {
+        openOverflowMenu()
+        onView(withText(R.string.action_sound)).perform(click())
+
+        openOverflowMenu()
+        onView(withText(R.string.action_sound)).check(matches(isDisplayed()))
+        onView(withText(R.string.action_sound)).perform(click())
+    }
+
+    @Test
     fun difficultyMenuItem_showsLevelOptions() {
         openOverflowMenu()
         onView(withText(R.string.action_difficulty)).perform(click())

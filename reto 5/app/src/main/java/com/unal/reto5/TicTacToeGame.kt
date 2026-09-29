@@ -21,12 +21,18 @@ class TicTacToeGame {
         for (i in board.indices) board[i] = OPEN_SPOT
     }
 
-    /** Coloca a [player] en [location] solo si esa posición está libre. */
-    fun setMove(player: Char, location: Int) {
-        if (board[location] == OPEN_SPOT) {
-            board[location] = player
-        }
+    /**
+     * Coloca a [player] en [location] solo si esa posición está libre.
+     * @return true si la jugada fue legal y se aplicó, false si la casilla estaba ocupada.
+     */
+    fun setMove(player: Char, location: Int): Boolean {
+        if (board[location] != OPEN_SPOT) return false
+        board[location] = player
+        return true
     }
+
+    /** Devuelve HUMAN_PLAYER, COMPUTER_PLAYER u OPEN_SPOT para la casilla [location] (0-8). */
+    fun getBoardOccupant(location: Int): Char = board[location]
 
     /**
      * Devuelve la mejor jugada para el computador (0-8) según [difficultyLevel]:

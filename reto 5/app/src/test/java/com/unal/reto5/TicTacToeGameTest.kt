@@ -1,6 +1,7 @@
 package com.unal.reto5
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -32,7 +33,24 @@ class TicTacToeGameTest {
         game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
         game.setMove(TicTacToeGame.COMPUTER_PLAYER, 0)
 
-        assertTrue(game.getComputerMove() != 0)
+        assertEquals(TicTacToeGame.HUMAN_PLAYER, game.getBoardOccupant(0))
+    }
+
+    @Test
+    fun setMove_returnsTrueOnFreeSpotAndFalseOnOccupiedSpot() {
+        assertTrue(game.setMove(TicTacToeGame.HUMAN_PLAYER, 4))
+        assertFalse(game.setMove(TicTacToeGame.COMPUTER_PLAYER, 4))
+    }
+
+    @Test
+    fun getBoardOccupant_reflectsMovesAndClearBoard() {
+        assertEquals(TicTacToeGame.OPEN_SPOT, game.getBoardOccupant(2))
+
+        game.setMove(TicTacToeGame.COMPUTER_PLAYER, 2)
+        assertEquals(TicTacToeGame.COMPUTER_PLAYER, game.getBoardOccupant(2))
+
+        game.clearBoard()
+        assertEquals(TicTacToeGame.OPEN_SPOT, game.getBoardOccupant(2))
     }
 
     @Test

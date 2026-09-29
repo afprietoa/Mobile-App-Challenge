@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="x_color">#FF00C800</color>
     <color name="o_color">#FFC80000</color>
+    <color name="board_background">#FF000000</color>
+    <color name="board_line">#FFCCCCCC</color>
 </resources>

@@ -1,32 +1,32 @@
-# Reto 4 — Menús y Dialog Boxes
+# Reto 5 — Gráficos y Sonido
 
-Continuación del Reto 3 (tres en raya): añade un menú de opciones completo y
-varios cuadros de diálogo, basado en el tutorial "Menus and Dialog Boxes" de
-Frank McCown (Harding University).
+Continuación del Reto 4 (tres en raya con menús y diálogos), basada en el tutorial
+"Graphics and Sound" de Frank McCown (Harding University): el tablero deja de ser
+una cuadrícula de botones y pasa a ser una vista personalizada que dibuja con Canvas,
+con efectos de sonido y una pausa antes de que responda el computador.
+
+## Novedades
+
+- **`BoardView`**: vista propia que dibuja la cuadrícula (`Canvas.drawLine`) y las
+  imágenes de X y O (`Canvas.drawBitmap`) según el estado de `TicTacToeGame`.
+- **Toques**: un `OnTouchListener` convierte la coordenada tocada en una casilla.
+- **Sonido**: `MediaPlayer` reproduce un efecto al mover el humano y otro al mover
+  Android. Se cargan en `onResume` y se liberan en `onPause`.
+  Menú ⋮ → **Sonido** activa/desactiva los efectos.
+- **Pausa del computador**: Android espera 1 s (`Handler.postDelayed`) para que se vea
+  el mensaje "Turno de Android." y no se solapen los sonidos; mientras espera, los
+  toques del humano se ignoran.
 
 ## Menú
 
-- **Nueva partida** — reinicia el tablero, igual que en el Reto 3.
-- **Dificultad** — abre un diálogo con radio buttons (Fácil / Difícil / Experto)
-  para cambiar el nivel de la IA en cualquier momento.
-- **Acerca de** — muestra un diálogo con el ícono de la app y una breve
-  descripción del juego.
-- **Salir** — pide confirmación (Sí/No) antes de cerrar la app.
+Nueva partida · Dificultad · Sonido · Acerca de · Salir
 
-## Niveles de dificultad
+## Recursos
 
-`TicTacToeGame.getComputerMove()` según `difficultyLevel`:
-- **Fácil**: siempre mueve al azar.
-- **Difícil**: gana si puede; si no, mueve al azar (no bloquea al humano).
-- **Experto** (por defecto): gana si puede; si no, bloquea al humano; si no,
-  mueve al azar.
-
-## Cómo jugar
-
-- Toca una casilla libre para colocar tu X; el computador responde automáticamente.
-- El marcador bajo el tablero lleva la cuenta de partidas ganadas por cada lado y empates.
-- Usa el menú (⋮ arriba a la derecha) para cambiar la dificultad, ver "Acerca de",
-  empezar una nueva partida o salir.
+- `res/drawable/x_img.xml`, `o_img.xml`: fichas como vector drawables.
+- `res/raw/human_move.wav`, `computer_move.wav`: efectos de sonido de relleno
+  (tonos cortos generados). Para usar otros, reemplázalos por archivos con el mismo
+  nombre base (p. ej. `human_move.mp3`) y borra el `.wav` correspondiente.
 
 ## Cómo correr las pruebas
 
@@ -37,8 +37,7 @@ Frank McCown (Harding University).
 
 ## Notas de implementación
 
-- Los diálogos se construyen con `AlertDialog.Builder` directamente desde el
-  `MenuProvider`, no con `Activity.onCreateDialog(int)`/`showDialog(int)`
-  (deprecados) del tutorial original.
-- El ícono de la app es un adaptive icon vectorial (grid + X/O) en vez de un
-  `icon.png` estático.
+- Las fichas son vectores que se convierten a `Bitmap` con `toBitmap()`, porque
+  `BitmapFactory.decodeResource` no decodifica `VectorDrawable`.
+- `BoardView` usa un único constructor con `@JvmOverloads` en lugar de los tres
+  constructores Java del tutorial.

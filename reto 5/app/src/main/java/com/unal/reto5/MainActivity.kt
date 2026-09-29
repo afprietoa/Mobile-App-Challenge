@@ -1,6 +1,7 @@
 package com.unal.reto5
 
 import android.annotation.SuppressLint
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -26,6 +27,9 @@ class MainActivity : AppCompatActivity() {
     private var humanWins = 0
     private var computerWins = 0
     private var ties = 0
+
+    private var humanPlayer: MediaPlayer? = null
+    private var computerPlayer: MediaPlayer? = null
 
     // Convierte el punto tocado en una casilla (0-8). Solo reacciona al primer contacto del dedo
     // (ACTION_DOWN) y devuelve false para no recibir los eventos MOVE/UP, como pide el tutorial.
@@ -87,6 +91,22 @@ class MainActivity : AppCompatActivity() {
         })
 
         startNewGame()
+    }
+
+    // Los MediaPlayer consumen recursos compartidos del sistema: se crean al volver a primer
+    // plano y se liberan al salir de él. create() puede devolver null, por eso son nulables.
+    override fun onResume() {
+        super.onResume()
+        humanPlayer = MediaPlayer.create(applicationContext, R.raw.human_move)
+        computerPlayer = MediaPlayer.create(applicationContext, R.raw.computer_move)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        humanPlayer?.release()
+        computerPlayer?.release()
+        humanPlayer = null
+        computerPlayer = null
     }
 
     // Muestra un diálogo de selección única con los niveles de dificultad;
@@ -166,11 +186,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Aplica la jugada al modelo y, si fue legal, pide redibujar el tablero.
+    // Aplica la jugada al modelo y, si fue legal, redibuja el tablero y reproduce su sonido.
     private fun setMove(player: Char, location: Int): Boolean {
         if (!game.setMove(player, location)) return false
         binding.board.invalidate()
+        playSound(if (player == TicTacToeGame.HUMAN_PLAYER) humanPlayer else computerPlayer)
         return true
+    }
+
+    // Reinicia el clip (seekTo(0)) para que vuelva a sonar aunque el anterior no haya terminado.
+    private fun playSound(player: MediaPlayer?) {
+        player?.apply {
+            seekTo(0)
+            start()
+        }
     }
 
     // Marca la partida como terminada, actualiza los contadores y el marcador.

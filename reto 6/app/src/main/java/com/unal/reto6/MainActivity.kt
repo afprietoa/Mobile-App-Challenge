@@ -118,6 +118,12 @@ class MainActivity : AppCompatActivity() {
         computerWins = prefs.getInt(KEY_COMPUTER_WINS, 0)
         ties = prefs.getInt(KEY_TIES, 0)
 
+        // Enum -> Int al guardar (ordinal) y Int -> enum al leer; cualquier valor inválido cae a EXPERT
+        game.difficultyLevel = TicTacToeGame.DifficultyLevel.entries
+            .getOrElse(prefs.getInt(KEY_DIFFICULTY, TicTacToeGame.DifficultyLevel.EXPERT.ordinal)) {
+                TicTacToeGame.DifficultyLevel.EXPERT
+            }
+
         if (savedInstanceState == null) {
             startNewGame()
         } else {
@@ -178,6 +184,7 @@ class MainActivity : AppCompatActivity() {
             putInt(KEY_HUMAN_WINS, humanWins)
             putInt(KEY_COMPUTER_WINS, computerWins)
             putInt(KEY_TIES, ties)
+            putInt(KEY_DIFFICULTY, game.difficultyLevel.ordinal)
         }
     }
 
@@ -196,6 +203,7 @@ class MainActivity : AppCompatActivity() {
             .setSingleChoiceItems(levels, selected) { dialog, which ->
                 dialog.dismiss()
                 game.difficultyLevel = TicTacToeGame.DifficultyLevel.entries[which]
+                prefs.edit { putInt(KEY_DIFFICULTY, which) }
                 Toast.makeText(this, levels[which], Toast.LENGTH_SHORT).show()
             }
             .show()
@@ -325,6 +333,8 @@ class MainActivity : AppCompatActivity() {
         const val COMPUTER_MOVE_DELAY_MS = 1000L
 
         const val PREFS_NAME = "ttt_prefs"
+
+        const val KEY_DIFFICULTY = "difficulty"
 
         const val KEY_BOARD = "board"
         const val KEY_GAME_OVER = "gameOver"

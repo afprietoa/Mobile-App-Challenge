@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Grid de tres en raya -->
+    <path
+        android:pathData="M42,20 L42,88 M66,20 L66,88 M20,42 L88,42 M20,66 L88,66"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4"
+        android:strokeLineCap="round" />
+
+    <!-- X en la celda superior izquierda -->
+    <path
+        android:pathData="M25,25 L37,37 M37,25 L25,37"
+        android:strokeColor="#FF00C800"
+        android:strokeWidth="4"
+        android:strokeLineCap="round" />
+
+    <!-- O en la celda inferior derecha -->
+    <path
+        android:pathData="M77,77 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0"
+        android:strokeColor="#FFC80000"
+        android:strokeWidth="4"
+        android:fillColor="#00000000" />
+</vector>

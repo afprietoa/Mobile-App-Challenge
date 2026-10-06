@@ -34,6 +34,15 @@ class TicTacToeGame {
     /** Devuelve HUMAN_PLAYER, COMPUTER_PLAYER u OPEN_SPOT para la casilla [location] (0-8). */
     fun getBoardOccupant(location: Int): Char = board[location]
 
+    /** Copia del tablero (9 casillas) para guardarla; modificarla no afecta al juego. */
+    fun getBoardState(): CharArray = board.clone()
+
+    /** Reemplaza el tablero por [state]; debe tener exactamente [BOARD_SIZE] casillas. */
+    fun setBoardState(state: CharArray) {
+        require(state.size == BOARD_SIZE) { "El tablero debe tener $BOARD_SIZE casillas" }
+        state.copyInto(board)
+    }
+
     /**
      * Devuelve la mejor jugada para el computador (0-8) según [difficultyLevel]:
      * - EASY: siempre una jugada al azar.

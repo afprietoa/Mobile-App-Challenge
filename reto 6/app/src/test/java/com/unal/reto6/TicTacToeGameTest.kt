@@ -1,7 +1,9 @@
 package com.unal.reto6
 
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -51,6 +53,45 @@ class TicTacToeGameTest {
 
         game.clearBoard()
         assertEquals(TicTacToeGame.OPEN_SPOT, game.getBoardOccupant(2))
+    }
+
+    @Test
+    fun getBoardState_returnsIndependentCopy() {
+        game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
+
+        val state = game.getBoardState()
+        state[0] = TicTacToeGame.OPEN_SPOT
+
+        assertEquals(TicTacToeGame.HUMAN_PLAYER, game.getBoardOccupant(0))
+        assertNotSame(state, game.getBoardState())
+    }
+
+    @Test
+    fun setBoardState_restoresSavedBoard() {
+        game.setMove(TicTacToeGame.HUMAN_PLAYER, 0)
+        game.setMove(TicTacToeGame.COMPUTER_PLAYER, 4)
+        val saved = game.getBoardState()
+
+        val restored = TicTacToeGame()
+        restored.setBoardState(saved)
+
+        assertArrayEquals(saved, restored.getBoardState())
+        assertEquals(TicTacToeGame.COMPUTER_PLAYER, restored.getBoardOccupant(4))
+    }
+
+    @Test
+    fun setBoardState_doesNotShareArrayWithCaller() {
+        val state = CharArray(TicTacToeGame.BOARD_SIZE) { TicTacToeGame.OPEN_SPOT }
+        game.setBoardState(state)
+
+        state[3] = TicTacToeGame.HUMAN_PLAYER
+
+        assertEquals(TicTacToeGame.OPEN_SPOT, game.getBoardOccupant(3))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun setBoardState_rejectsWrongSize() {
+        game.setBoardState(CharArray(4))
     }
 
     @Test

@@ -107,7 +107,27 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        startNewGame()
+        if (savedInstanceState == null) {
+            startNewGame()
+        } else {
+            restoreGameState(savedInstanceState)
+        }
+        updateScoreboard()
+    }
+
+    // Rellena las variables de la Activity nueva con lo guardado por la anterior.
+    // Si era turno del computador, onResume() reprograma su jugada (computerTurn == true).
+    private fun restoreGameState(state: Bundle) {
+        state.getCharArray(KEY_BOARD)?.let { game.setBoardState(it) }
+        gameOver = state.getBoolean(KEY_GAME_OVER)
+        computerTurn = state.getBoolean(KEY_COMPUTER_TURN)
+        humanGoesFirst = state.getBoolean(KEY_HUMAN_GOES_FIRST, true)
+        soundEnabled = state.getBoolean(KEY_SOUND_ENABLED, true)
+        binding.information.text = state.getCharSequence(KEY_INFO)
+        humanWins = state.getInt(KEY_HUMAN_WINS)
+        computerWins = state.getInt(KEY_COMPUTER_WINS)
+        ties = state.getInt(KEY_TIES)
+        binding.board.invalidate()
     }
 
     // Los MediaPlayer consumen recursos compartidos del sistema: se crean al volver a primer
@@ -128,6 +148,21 @@ class MainActivity : AppCompatActivity() {
         computerPlayer?.release()
         humanPlayer = null
         computerPlayer = null
+    }
+
+    // Android destruye y recrea la Activity al rotar: se empaqueta lo necesario para
+    // retomar la partida exactamente donde estaba (el Bundle regresa en onCreate).
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putCharArray(KEY_BOARD, game.getBoardState())
+        outState.putBoolean(KEY_GAME_OVER, gameOver)
+        outState.putBoolean(KEY_COMPUTER_TURN, computerTurn) // sin esto el turno se "pierde" (bug del PDF, paso 5)
+        outState.putBoolean(KEY_HUMAN_GOES_FIRST, humanGoesFirst)
+        outState.putBoolean(KEY_SOUND_ENABLED, soundEnabled)
+        outState.putCharSequence(KEY_INFO, binding.information.text)
+        outState.putInt(KEY_HUMAN_WINS, humanWins)
+        outState.putInt(KEY_COMPUTER_WINS, computerWins)
+        outState.putInt(KEY_TIES, ties)
     }
 
     // Muestra un diálogo de selección única con los niveles de dificultad;
@@ -206,6 +241,7 @@ class MainActivity : AppCompatActivity() {
     private fun scheduleComputerMove() {
         computerTurn = true
         binding.information.text = getString(R.string.turn_computer)
+        handler.removeCallbacks(computerMoveRunnable)
         handler.postDelayed(computerMoveRunnable, COMPUTER_MOVE_DELAY_MS)
     }
 
@@ -267,5 +303,15 @@ class MainActivity : AppCompatActivity() {
 
     private companion object {
         const val COMPUTER_MOVE_DELAY_MS = 1000L
+
+        const val KEY_BOARD = "board"
+        const val KEY_GAME_OVER = "gameOver"
+        const val KEY_COMPUTER_TURN = "computerTurn"
+        const val KEY_HUMAN_GOES_FIRST = "humanGoesFirst"
+        const val KEY_SOUND_ENABLED = "soundEnabled"
+        const val KEY_INFO = "info"
+        const val KEY_HUMAN_WINS = "humanWins"
+        const val KEY_COMPUTER_WINS = "computerWins"
+        const val KEY_TIES = "ties"
     }
 }

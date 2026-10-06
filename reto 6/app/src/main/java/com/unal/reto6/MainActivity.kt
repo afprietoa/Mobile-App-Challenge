@@ -1,6 +1,8 @@
 package com.unal.reto6
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var humanWins = 0
     private var computerWins = 0
     private var ties = 0
+    private lateinit var prefs: SharedPreferences
 
     private var humanPlayer: MediaPlayer? = null
     private var computerPlayer: MediaPlayer? = null
@@ -107,6 +111,13 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+        // Los marcadores viven en SharedPreferences (0 la primera vez que se abre la app)
+        humanWins = prefs.getInt(KEY_HUMAN_WINS, 0)
+        computerWins = prefs.getInt(KEY_COMPUTER_WINS, 0)
+        ties = prefs.getInt(KEY_TIES, 0)
+
         if (savedInstanceState == null) {
             startNewGame()
         } else {
@@ -124,9 +135,6 @@ class MainActivity : AppCompatActivity() {
         humanGoesFirst = state.getBoolean(KEY_HUMAN_GOES_FIRST, true)
         soundEnabled = state.getBoolean(KEY_SOUND_ENABLED, true)
         binding.information.text = state.getCharSequence(KEY_INFO)
-        humanWins = state.getInt(KEY_HUMAN_WINS)
-        computerWins = state.getInt(KEY_COMPUTER_WINS)
-        ties = state.getInt(KEY_TIES)
         binding.board.invalidate()
     }
 
@@ -160,9 +168,17 @@ class MainActivity : AppCompatActivity() {
         outState.putBoolean(KEY_HUMAN_GOES_FIRST, humanGoesFirst)
         outState.putBoolean(KEY_SOUND_ENABLED, soundEnabled)
         outState.putCharSequence(KEY_INFO, binding.information.text)
-        outState.putInt(KEY_HUMAN_WINS, humanWins)
-        outState.putInt(KEY_COMPUTER_WINS, computerWins)
-        outState.putInt(KEY_TIES, ties)
+    }
+
+    // onStop() se ejecuta al cerrar la app con Atrás y también al rotar: es el momento de
+    // guardar lo que debe sobrevivir entre ejecuciones.
+    override fun onStop() {
+        super.onStop()
+        prefs.edit {
+            putInt(KEY_HUMAN_WINS, humanWins)
+            putInt(KEY_COMPUTER_WINS, computerWins)
+            putInt(KEY_TIES, ties)
+        }
     }
 
     // Muestra un diálogo de selección única con los niveles de dificultad;
@@ -303,6 +319,8 @@ class MainActivity : AppCompatActivity() {
 
     private companion object {
         const val COMPUTER_MOVE_DELAY_MS = 1000L
+
+        const val PREFS_NAME = "ttt_prefs"
 
         const val KEY_BOARD = "board"
         const val KEY_GAME_OVER = "gameOver"

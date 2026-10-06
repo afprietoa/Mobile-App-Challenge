@@ -1,32 +1,28 @@
-# reto 6 — Gráficos y Sonido
+# Reto 6 — Cambio de orientación y persistencia de estado
 
-Continuación del Reto 4 (tres en raya con menús y diálogos), basada en el tutorial
-"Graphics and Sound" de Frank McCown (Harding University): el tablero deja de ser
-una cuadrícula de botones y pasa a ser una vista personalizada que dibuja con Canvas,
-con efectos de sonido y una pausa antes de que responda el computador.
+Continuación del Reto 5 (tres en raya con vista personalizada y sonido), basada en el
+tutorial "Changing the Orientation and Saving State" de Frank McCown (Harding University).
 
 ## Novedades
 
-- **`BoardView`**: vista propia que dibuja la cuadrícula (`Canvas.drawLine`) y las
-  imágenes de X y O (`Canvas.drawBitmap`) según el estado de `TicTacToeGame`.
-- **Toques**: un `OnTouchListener` convierte la coordenada tocada en una casilla.
-- **Sonido**: `MediaPlayer` reproduce un efecto al mover el humano y otro al mover
-  Android. Se cargan en `onResume` y se liberan en `onPause`.
-  Menú ⋮ → **Sonido** activa/desactiva los efectos.
-- **Pausa del computador**: Android espera 1 s (`Handler.postDelayed`) para que se vea
-  el mensaje "Turno de Android." y no se solapen los sonidos; mientras espera, los
-  toques del humano se ignoran.
+- **Layout horizontal** (`res/layout-land/activity_main.xml`): tablero de 270 dp a la
+  izquierda; mensaje de turno y marcadores a la derecha.
+- **Estado de la partida al rotar**: `onSaveInstanceState` guarda tablero, fin de juego,
+  turno del computador, quién empieza, sonido y mensaje; `onCreate` los restaura.
+  Guardar el turno evita el bug de "el computador mueve de más" tras rotar.
+- **Marcadores persistentes**: `SharedPreferences` (`ttt_prefs`), escritos en `onStop()`.
+- **Dificultad persistente** (reto extra 1): se guarda el `ordinal` del enum.
+- **Rotar antes de la jugada del computador** (reto extra 2): la Activity nueva retoma el
+  turno pendiente en `onResume`; no hay crash porque el `Handler` se cancela en `onPause`.
+- **Menú**: Nueva partida · Dificultad · Sonido · Reiniciar marcador · Acerca de
+  (se eliminó "Salir").
 
-## Menú
+## Dónde se guarda cada cosa
 
-Nueva partida · Dificultad · Sonido · Acerca de · Salir
-
-## Recursos
-
-- `res/drawable/x_img.xml`, `o_img.xml`: fichas como vector drawables.
-- `res/raw/human_move.wav`, `computer_move.wav`: efectos de sonido de relleno
-  (tonos cortos generados). Para usar otros, reemplázalos por archivos con el mismo
-  nombre base (p. ej. `human_move.mp3`) y borra el `.wav` correspondiente.
+| Dato | Mecanismo | Sobrevive a |
+|---|---|---|
+| Tablero, turno, mensaje, quién empieza, sonido | `Bundle` (`onSaveInstanceState`) | Rotación |
+| Marcadores, dificultad | `SharedPreferences` (`onStop`) | Rotación y cierre de la app |
 
 ## Cómo correr las pruebas
 
@@ -37,7 +33,7 @@ Nueva partida · Dificultad · Sonido · Acerca de · Salir
 
 ## Notas de implementación
 
-- Las fichas son vectores que se convierten a `Bitmap` con `toBitmap()`, porque
-  `BitmapFactory.decodeResource` no decodifica `VectorDrawable`.
-- `BoardView` usa un único constructor con `@JvmOverloads` en lugar de los tres
-  constructores Java del tutorial.
+- Restaurar en `onCreate` equivale a hacerlo en `onRestoreInstanceState`; se eligió
+  `onCreate` para tener un único `if (savedInstanceState == null) … else …`.
+- El tema ya es `NoActionBar` con una `Toolbar` propia, por lo que no se aplica
+  `Theme.NoTitleBar` del tutorial original.

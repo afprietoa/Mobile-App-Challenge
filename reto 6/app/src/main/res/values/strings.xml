@@ -7,10 +7,7 @@
     <string name="difficulty_easy">Fácil</string>
     <string name="difficulty_harder">Difícil</string>
     <string name="difficulty_expert">Experto</string>
-    <string name="action_quit">Salir</string>
-    <string name="quit_question">¿Seguro que quieres salir?</string>
-    <string name="yes">Sí</string>
-    <string name="no">No</string>
+    <string name="action_reset_scores">Reiniciar marcador</string>
     <string name="action_about">Acerca de</string>
     <string name="about_title">Tres en raya</string>
     <string name="about_message">Hecho en Kotlin para el reto 6.\nElige entre tres niveles de dificultad. ¡No dejes que Android te gane!</string>

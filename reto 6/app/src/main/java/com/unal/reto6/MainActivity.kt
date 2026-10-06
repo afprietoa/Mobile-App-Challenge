@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
                         showAboutDialog()
                         true
                     }
-                    R.id.action_quit -> {
-                        showQuitDialog()
+                    R.id.action_reset_scores -> {
+                        resetScores()
                         true
                     }
                     else -> false
@@ -198,16 +198,6 @@ class MainActivity : AppCompatActivity() {
                 game.difficultyLevel = TicTacToeGame.DifficultyLevel.entries[which]
                 Toast.makeText(this, levels[which], Toast.LENGTH_SHORT).show()
             }
-            .show()
-    }
-
-    // Pide confirmación antes de cerrar la Activity; "No" simplemente cierra el diálogo.
-    private fun showQuitDialog() {
-        AlertDialog.Builder(this)
-            .setMessage(R.string.quit_question)
-            .setCancelable(false)
-            .setPositiveButton(R.string.yes) { _, _ -> finish() }
-            .setNegativeButton(R.string.no, null)
             .show()
     }
 
@@ -309,6 +299,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
         updateScoreboard()
+    }
+
+    // Pone los tres contadores en 0, los muestra y los guarda de inmediato
+    // (no se espera a onStop para que el reinicio sobreviva a un cierre brusco).
+    private fun resetScores() {
+        humanWins = 0
+        computerWins = 0
+        ties = 0
+        updateScoreboard()
+        prefs.edit {
+            putInt(KEY_HUMAN_WINS, 0)
+            putInt(KEY_COMPUTER_WINS, 0)
+            putInt(KEY_TIES, 0)
+        }
     }
 
     private fun updateScoreboard() {

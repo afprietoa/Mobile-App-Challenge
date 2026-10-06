@@ -1,8 +1,8 @@
 package com.unal.reto6
 
+import android.content.Context
 import android.view.InputDevice
 import android.view.MotionEvent
-import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.ViewAction
@@ -11,7 +11,9 @@ import androidx.test.espresso.action.GeneralClickAction
 import androidx.test.espresso.action.Press
 import androidx.test.espresso.action.Tap
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isChecked
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -20,13 +22,26 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ExternalResource
+import org.junit.rules.RuleChain
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
 
+    // Marcadores y dificultad persisten en el dispositivo: se borran antes de lanzar la Activity
+    // para que ningún test dependa del anterior.
+    private val clearPrefsRule = object : ExternalResource() {
+        override fun before() {
+            InstrumentationRegistry.getInstrumentation().targetContext
+                .getSharedPreferences("ttt_prefs", Context.MODE_PRIVATE)
+                .edit().clear().commit()
+        }
+    }
+    private val activityRule = ActivityScenarioRule(MainActivity::class.java)
+
     @get:Rule
-    val activityRule = ActivityScenarioRule(MainActivity::class.java)
+    val rules: RuleChain = RuleChain.outerRule(clearPrefsRule).around(activityRule)
 
     private fun openOverflowMenu() {
         openActionBarOverflowOrOptionsMenu(
@@ -123,14 +138,71 @@ class MainActivityTest {
     }
 
     @Test
-    fun quitMenuItem_confirmingYes_finishesActivity() {
+    fun recreate_keepsHumanTurnMessageAfterComputerMoved() {
+        onView(withId(R.id.board)).perform(tapCell(1, 1))
+        waitForComputerMove()
+
+        activityRule.scenario.recreate()
+
+        onView(withText(R.string.turn_human)).check(matches(isDisplayed()))
+    }
+
+    // Extra 2: rotar antes de que mueva el computador no debe dejarlo "colgado".
+    @Test
+    fun recreateDuringComputerTurn_computerStillMoves() {
+        onView(withId(R.id.board)).perform(tapCell(0, 0))
+
+        activityRule.scenario.recreate()
+
+        onView(withText(R.string.turn_computer)).check(matches(isDisplayed()))
+        waitForComputerMove()
+        onView(withText(R.string.turn_human)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun recreate_doesNotMakeComputerMoveTwiceOnHumanTurn() {
+        onView(withId(R.id.board)).perform(tapCell(0, 0))
+        waitForComputerMove()
+
+        activityRule.scenario.recreate()
+        waitForComputerMove() // si hubiera una jugada extra, ya habría ocurrido
+
+        onView(withText(R.string.turn_human)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun resetScores_showsZerosAndSurvivesRecreate() {
+        onView(withText("Humano: 0")).check(matches(isDisplayed()))
+
         openOverflowMenu()
-        onView(withText(R.string.action_quit)).perform(click())
+        onView(withText(R.string.action_reset_scores)).perform(click())
 
-        onView(withText(R.string.yes)).perform(click())
+        activityRule.scenario.recreate()
+        onView(withText("Humano: 0")).check(matches(isDisplayed()))
+        onView(withText("Empates: 0")).check(matches(isDisplayed()))
+        onView(withText("Android: 0")).check(matches(isDisplayed()))
+    }
 
-        activityRule.scenario.moveToState(Lifecycle.State.RESUMED) // no-op si ya terminó
-        assert(activityRule.scenario.state == Lifecycle.State.DESTROYED)
+    @Test
+    fun difficulty_survivesRecreate() {
+        openOverflowMenu()
+        onView(withText(R.string.action_difficulty)).perform(click())
+        onView(withText(R.string.difficulty_easy)).perform(click())
+
+        activityRule.scenario.recreate()
+
+        openOverflowMenu()
+        onView(withText(R.string.action_difficulty)).perform(click())
+        onView(withText(R.string.difficulty_easy)).check(matches(isChecked()))
+        onView(withText(R.string.difficulty_easy)).perform(click())
+    }
+
+    @Test
+    fun menu_hasResetScoresAndNoQuit() {
+        openOverflowMenu()
+
+        onView(withText(R.string.action_reset_scores)).check(matches(isDisplayed()))
+        onView(withText("Salir")).check(doesNotExist())
     }
 
     private companion object {

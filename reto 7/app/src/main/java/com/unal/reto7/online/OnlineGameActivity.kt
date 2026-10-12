@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -30,6 +32,8 @@ class OnlineGameActivity : AppCompatActivity() {
     private var current: OnlineGame? = null
     private var subscription: Subscription? = null
     private var presenceRegistered = false
+    private var leaving = false
+    private var endDialogShown = false
 
     // Igual que en MainActivity: convierte el punto tocado en una casilla (0-8) solo en ACTION_DOWN.
     private val boardTouchListener = View.OnTouchListener { _, event ->
@@ -66,6 +70,22 @@ class OnlineGameActivity : AppCompatActivity() {
 
         // La revancha es una transacción: si ambos la piden a la vez, solo se aplica una.
         binding.buttonRematch.setOnClickListener { repository.requestRematch(gameId, myId) }
+
+        // Salir en mitad de una partida pide confirmación porque avisa y cierra el juego del rival.
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (current?.status == OnlineGameRules.STATUS_PLAYING) {
+                    AlertDialog.Builder(this@OnlineGameActivity)
+                        .setTitle(R.string.online_leave_title)
+                        .setMessage(R.string.online_leave_message)
+                        .setPositiveButton(R.string.yes) { _, _ -> leave() }
+                        .setNegativeButton(R.string.no, null)
+                        .show()
+                } else {
+                    leave()
+                }
+            }
+        })
     }
 
     // El servidor es la fuente de verdad: al volver a primer plano (o tras rotar) se re-suscribe
@@ -82,7 +102,16 @@ class OnlineGameActivity : AppCompatActivity() {
     }
 
     private fun render(game: OnlineGame?) {
-        if (game == null) return // nodo borrado: el manejo llega con la salida/desconexión
+        if (leaving) return
+        if (game == null) {
+            // El nodo fue borrado (p. ej. el anfitrión salió de un juego en espera o terminado).
+            showEndAndExit(R.string.online_game_gone)
+            return
+        }
+        if (game.status == OnlineGameRules.STATUS_ABANDONED) {
+            showEndAndExit(R.string.online_opponent_left)
+            return
+        }
         current = game
 
         boardModel.setBoardState(game.board.toCharArray())
@@ -127,6 +156,24 @@ class OnlineGameActivity : AppCompatActivity() {
             getString(if (iAmHost) R.string.online_you_won else R.string.online_you_lost)
         else ->
             getString(if (iAmHost) R.string.online_you_lost else R.string.online_you_won)
+    }
+
+    // waiting/finished: borra el juego · playing: lo marca `abandoned` para avisar al rival.
+    private fun leave() {
+        leaving = true
+        repository.leaveGame(gameId, myId)
+        finish()
+    }
+
+    // Avisa que la partida terminó por causa externa y vuelve al lobby al aceptar.
+    private fun showEndAndExit(message: Int) {
+        if (isFinishing || endDialogShown) return
+        endDialogShown = true
+        AlertDialog.Builder(this)
+            .setMessage(message)
+            .setCancelable(false)
+            .setPositiveButton(R.string.ok) { _, _ -> leave() } // limpia el nodo si quedó
+            .show()
     }
 
     private fun onCellTouched(cell: Int) {

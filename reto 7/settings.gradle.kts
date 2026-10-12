@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "reto 6"
+rootProject.name = "reto 7"
 include(":app")

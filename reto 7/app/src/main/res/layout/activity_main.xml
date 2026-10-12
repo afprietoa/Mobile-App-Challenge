@@ -17,7 +17,7 @@
         android:theme="?attr/actionBarTheme"
         app:title="@string/app_name" />
 
-    <com.unal.reto6.BoardView
+    <com.unal.reto7.BoardView
         android:id="@+id/board"
         android:layout_width="300dp"
         android:layout_height="300dp"

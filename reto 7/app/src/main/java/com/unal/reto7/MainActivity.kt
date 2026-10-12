@@ -1,4 +1,4 @@
-package com.unal.reto6
+package com.unal.reto7
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -20,7 +20,7 @@ import androidx.core.content.edit
 import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.unal.reto6.databinding.ActivityMainBinding
+import com.unal.reto7.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-# Reto 6 — Cambio de orientación y persistencia de estado
+# Reto 7 — Cambio de orientación y persistencia de estado
 
 Continuación del Reto 5 (tres en raya con vista personalizada y sonido), basada en el
 tutorial "Changing the Orientation and Saving State" de Frank McCown (Harding University).

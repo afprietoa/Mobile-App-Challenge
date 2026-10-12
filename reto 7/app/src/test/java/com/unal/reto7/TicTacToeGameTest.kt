@@ -1,4 +1,4 @@
-package com.unal.reto6
+package com.unal.reto7
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals

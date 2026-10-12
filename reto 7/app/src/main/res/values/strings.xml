@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">reto 6</string>
+    <string name="app_name">reto 7</string>
     <string name="action_new_game">Nueva partida</string>
     <string name="action_sound">Sonido</string>
     <string name="action_difficulty">Dificultad</string>
@@ -10,7 +10,7 @@
     <string name="action_reset_scores">Reiniciar marcador</string>
     <string name="action_about">Acerca de</string>
     <string name="about_title">Tres en raya</string>
-    <string name="about_message">Hecho en Kotlin para el reto 6.\nElige entre tres niveles de dificultad. ¡No dejes que Android te gane!</string>
+    <string name="about_message">Hecho en Kotlin para el reto 7.\nElige entre tres niveles de dificultad. ¡No dejes que Android te gane!</string>
     <string name="ok">OK</string>
 
     <string name="first_human">Tú empiezas.</string>

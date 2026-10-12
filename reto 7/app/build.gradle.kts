@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    namespace = "com.unal.reto6"
+    namespace = "com.unal.reto7"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.unal.reto6"
+        applicationId = "com.unal.reto7"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

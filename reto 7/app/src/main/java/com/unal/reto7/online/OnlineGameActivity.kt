@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -99,7 +100,15 @@ class OnlineGameActivity : AppCompatActivity() {
         val game = current ?: return
         // Tablero bloqueado mientras no haya dos jugadores en juego.
         if (game.status != OnlineGameRules.STATUS_PLAYING) return
-        // El envío de la jugada llega junto con la sincronización de turnos.
+        if (!OnlineGameRules.isMyTurn(game, myId)) {
+            Toast.makeText(this, R.string.not_your_turn, Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (game.board[cell] != TicTacToeGame.OPEN_SPOT) return
+
+        // Validación local rápida; la decisión final la toma la transacción en el servidor
+        // (si el rival movió primero, se aborta y el tablero vuelve al estado real).
+        repository.makeMove(gameId, myId, cell)
     }
 
     companion object {

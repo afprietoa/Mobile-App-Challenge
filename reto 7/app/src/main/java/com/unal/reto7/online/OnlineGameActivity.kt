@@ -62,6 +62,9 @@ class OnlineGameActivity : AppCompatActivity() {
 
         binding.board.game = boardModel
         binding.board.setOnTouchListener(boardTouchListener)
+
+        // La revancha es una transacción: si ambos la piden a la vez, solo se aplica una.
+        binding.buttonRematch.setOnClickListener { repository.requestRematch(gameId, myId) }
     }
 
     // El servidor es la fuente de verdad: al volver a primer plano (o tras rotar) se re-suscribe
@@ -104,6 +107,9 @@ class OnlineGameActivity : AppCompatActivity() {
             OnlineGameRules.STATUS_FINISHED -> resultText(game, iAmHost)
             else -> ""
         }
+
+        binding.buttonRematch.visibility =
+            if (game.status == OnlineGameRules.STATUS_FINISHED) View.VISIBLE else View.GONE
     }
 
     // RESULT_HUMAN_WON significa aquí "ganó X (anfitrión)" y RESULT_COMPUTER_WON "ganó O (invitado)".

@@ -10,7 +10,7 @@
     <string name="action_reset_scores">Reiniciar marcador</string>
     <string name="action_about">Acerca de</string>
     <string name="about_title">Tres en raya</string>
-    <string name="about_message">Hecho en Kotlin para el reto 7.\nElige entre tres niveles de dificultad. ¡No dejes que Android te gane!</string>
+    <string name="about_message">Hecho en Kotlin para el reto 7.\nJuega en línea contra otra persona desde su propio dispositivo, o contra Android en tres niveles de dificultad.</string>
     <string name="ok">OK</string>
 
     <string name="first_human">Tú empiezas.</string>

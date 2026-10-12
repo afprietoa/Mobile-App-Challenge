@@ -23,4 +23,19 @@
     <string name="score_human_format">Humano: %d</string>
     <string name="score_ties_format">Empates: %d</string>
     <string name="score_computer_format">Android: %d</string>
+
+    <string name="lobby_title">Triqui online</string>
+    <string name="lobby_connecting">Conectando…</string>
+    <string name="lobby_empty">No hay juegos disponibles. ¡Crea uno!</string>
+    <string name="lobby_available">Juegos disponibles (%d)</string>
+    <string name="lobby_error">Sin conexión con el servidor.</string>
+    <string name="lobby_create">Crear juego</string>
+    <string name="lobby_vs_android">Jugar contra Android</string>
+    <string name="lobby_tap_to_join">Toca para unirte</string>
+    <string name="lobby_host_format">Juego de %s</string>
+    <string name="lobby_join_failed">No pudiste unirte: el juego ya no está disponible.</string>
+    <string name="action_change_name">Cambiar nombre</string>
+    <string name="name_hint">Tu nombre</string>
+    <string name="name_title">¿Cómo te llamas?</string>
+    <string name="default_name_format">Jugador %s</string>
 </resources>

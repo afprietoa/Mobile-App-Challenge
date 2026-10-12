@@ -84,16 +84,35 @@ class OnlineGameActivity : AppCompatActivity() {
         boardModel.setBoardState(game.board.toCharArray())
         binding.board.invalidate()
 
+        val iAmHost = myId == game.hostId
+        val opponentName = (if (iAmHost) game.guestName else game.hostName).ifBlank { "?" }
+
         binding.players.text = getString(
             R.string.online_players_format,
             game.hostName.ifBlank { "?" },
             game.guestName.ifBlank { "…" }
         )
 
-        // Turnos y resultado se muestran cuando se sincronicen las jugadas.
-        binding.information.text =
-            if (game.status == OnlineGameRules.STATUS_WAITING) getString(R.string.online_waiting_guest)
-            else ""
+        binding.information.text = when (game.status) {
+            OnlineGameRules.STATUS_WAITING -> getString(R.string.online_waiting_guest)
+            OnlineGameRules.STATUS_PLAYING ->
+                if (OnlineGameRules.isMyTurn(game, myId)) {
+                    getString(R.string.online_your_turn, OnlineGameRules.markOf(game, myId))
+                } else {
+                    getString(R.string.online_opponent_turn, opponentName)
+                }
+            OnlineGameRules.STATUS_FINISHED -> resultText(game, iAmHost)
+            else -> ""
+        }
+    }
+
+    // RESULT_HUMAN_WON significa aquí "ganó X (anfitrión)" y RESULT_COMPUTER_WON "ganó O (invitado)".
+    private fun resultText(game: OnlineGame, iAmHost: Boolean): String = when (game.result) {
+        TicTacToeGame.RESULT_TIE -> getString(R.string.online_tie)
+        TicTacToeGame.RESULT_HUMAN_WON ->
+            getString(if (iAmHost) R.string.online_you_won else R.string.online_you_lost)
+        else ->
+            getString(if (iAmHost) R.string.online_you_lost else R.string.online_you_won)
     }
 
     private fun onCellTouched(cell: Int) {

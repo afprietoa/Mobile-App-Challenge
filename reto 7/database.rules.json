@@ -1,0 +1,33 @@
+{
+  "rules": {
+    "games": {
+      ".read": "auth != null",
+      ".indexOn": ["status"],
+      "$gameId": {
+        ".write": "auth != null && (!data.exists() || data.child('hostId').val() === auth.uid || data.child('guestId').val() === auth.uid || (data.child('status').val() === 'waiting' && data.child('guestId').val() === '' && newData.child('guestId').val() === auth.uid))",
+        ".validate": "newData.hasChildren(['hostId', 'board', 'turn', 'status'])",
+        "board": {
+          ".validate": "newData.isString() && newData.val().length === 9"
+        },
+        "turn": {
+          ".validate": "newData.val() === 'X' || newData.val() === 'O'"
+        },
+        "firstMark": {
+          ".validate": "newData.val() === 'X' || newData.val() === 'O'"
+        },
+        "status": {
+          ".validate": "newData.val() === 'waiting' || newData.val() === 'playing' || newData.val() === 'finished' || newData.val() === 'abandoned'"
+        },
+        "result": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3"
+        },
+        "hostName": {
+          ".validate": "newData.isString() && newData.val().length <= 32"
+        },
+        "guestName": {
+          ".validate": "newData.isString() && newData.val().length <= 32"
+        }
+      }
+    }
+  }
+}

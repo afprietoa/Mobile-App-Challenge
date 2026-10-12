@@ -29,6 +29,7 @@ class OnlineGameActivity : AppCompatActivity() {
     private val boardModel = TicTacToeGame()
     private var current: OnlineGame? = null
     private var subscription: Subscription? = null
+    private var presenceRegistered = false
 
     // Igual que en MainActivity: convierte el punto tocado en una casilla (0-8) solo en ACTION_DOWN.
     private val boardTouchListener = View.OnTouchListener { _, event ->
@@ -96,14 +97,21 @@ class OnlineGameActivity : AppCompatActivity() {
             game.guestName.ifBlank { "…" }
         )
 
+        // Presencia: se registra una vez que la partida está en curso (ver setPresence).
+        if (game.status == OnlineGameRules.STATUS_PLAYING && !presenceRegistered) {
+            presenceRegistered = true
+            repository.setPresence(gameId, iAmHost)
+        }
+        val opponentOffline = if (iAmHost) !game.guestOnline else !game.hostOnline
+
         binding.information.text = when (game.status) {
             OnlineGameRules.STATUS_WAITING -> getString(R.string.online_waiting_guest)
-            OnlineGameRules.STATUS_PLAYING ->
-                if (OnlineGameRules.isMyTurn(game, myId)) {
+            OnlineGameRules.STATUS_PLAYING -> when {
+                opponentOffline -> getString(R.string.online_opponent_offline, opponentName)
+                OnlineGameRules.isMyTurn(game, myId) ->
                     getString(R.string.online_your_turn, OnlineGameRules.markOf(game, myId))
-                } else {
-                    getString(R.string.online_opponent_turn, opponentName)
-                }
+                else -> getString(R.string.online_opponent_turn, opponentName)
+            }
             OnlineGameRules.STATUS_FINISHED -> resultText(game, iAmHost)
             else -> ""
         }

@@ -94,7 +94,12 @@ class FirebaseGameRepository(
         transact(gameId, { OnlineGameRules.rematch(it, playerId) }, onResult)
 
     override fun setPresence(gameId: String, isHost: Boolean) {
-        val flag = games.child(gameId).child(if (isHost) "hostOnline" else "guestOnline")
+        val game = games.child(gameId)
+        // El borrado automático de createGame solo aplica mientras el anfitrión espera;
+        // con la partida en curso se cancela para que una caída no destruya el nodo.
+        if (isHost) game.onDisconnect().cancel()
+
+        val flag = game.child(if (isHost) "hostOnline" else "guestOnline")
         // Primero se registra lo que pasará al desconectarse y luego se marca en línea.
         flag.onDisconnect().setValue(false).addOnCompleteListener { flag.setValue(true) }
     }

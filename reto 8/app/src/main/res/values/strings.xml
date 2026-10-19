@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Directorio de software</string>
+
+    <string name="class_consulting">Consultoría</string>
+    <string name="class_custom">Desarrollo a la medida</string>
+    <string name="class_factory">Fábrica de software</string>
+    <string name="class_separator"> · </string>
 </resources>

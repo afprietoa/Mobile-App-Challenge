@@ -4,6 +4,7 @@
     <string name="list_title">Empresas de software</string>
     <string name="list_empty">No hay empresas. Toca + para agregar la primera.</string>
     <string name="list_empty_filtered">Ninguna empresa coincide con el filtro.</string>
+    <string name="search_hint">Buscar por nombre</string>
     <string name="action_add">Agregar empresa</string>
     <string name="action_delete">Eliminar</string>
 

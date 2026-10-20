@@ -35,6 +35,7 @@ class CompanyAdapter(
                 .joinToString(ctx.getString(R.string.class_separator)) { ctx.getString(it.label) }
             b.companyContact.text = listOf(c.phone, c.email).filter { it.isNotBlank() }.joinToString(" · ")
             b.companyContact.isVisible = b.companyContact.text.isNotEmpty()
+            b.buttonDelete.contentDescription = ctx.getString(R.string.delete_company_description, c.name)
             b.root.setOnClickListener { onClick(c) }
             b.buttonDelete.setOnClickListener { onDelete(c) }
         }

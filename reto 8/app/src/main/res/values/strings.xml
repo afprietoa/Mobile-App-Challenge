@@ -30,6 +30,12 @@
     <string name="cancel">Cancelar</string>
     <string name="deleted">Empresa eliminada</string>
 
+    <string name="action_call">Llamar</string>
+    <string name="action_email">Escribir</string>
+    <string name="action_web">Abrir web</string>
+    <string name="no_app_for_action">No hay una app para realizar esta acción</string>
+    <string name="delete_company_description">Eliminar %s</string>
+
     <string name="class_consulting">Consultoría</string>
     <string name="class_custom">Desarrollo a la medida</string>
     <string name="class_factory">Fábrica de software</string>

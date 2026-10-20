@@ -1,9 +1,13 @@
 package com.unal.reto8.ui
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +15,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import com.google.android.material.textfield.TextInputLayout
 import com.unal.reto8.R
 import com.unal.reto8.data.CompanyDbHelper
@@ -52,6 +57,23 @@ class CompanyFormActivity : AppCompatActivity() {
         setTitle(if (companyId == 0L) R.string.form_title_new else R.string.form_title_edit)
 
         binding.buttonSave.setOnClickListener { save() }
+
+        // Acciones de contacto: solo al editar y solo si el campo correspondiente tiene contenido.
+        if (companyId != 0L) {
+            binding.inputPhone.doAfterTextChanged { updateContactButtons() }
+            binding.inputEmail.doAfterTextChanged { updateContactButtons() }
+            binding.inputWebsite.doAfterTextChanged { updateContactButtons() }
+            // ACTION_DIAL (no ACTION_CALL): abre el marcador sin pedir permisos
+            binding.buttonCall.setOnClickListener {
+                launch(Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + Uri.encode(text(binding.inputPhone)))))
+            }
+            binding.buttonEmail.setOnClickListener {
+                launch(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:" + Uri.encode(text(binding.inputEmail)))))
+            }
+            binding.buttonWeb.setOnClickListener {
+                launch(Intent(Intent.ACTION_VIEW, Uri.parse(CompanyValidator.normalizeUrl(text(binding.inputWebsite)))))
+            }
+        }
 
         // Eliminar solo existe al editar una empresa ya guardada.
         if (companyId != 0L) {
@@ -141,6 +163,22 @@ class CompanyFormActivity : AppCompatActivity() {
                     Toast.makeText(this, R.string.save_failed, Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+
+    private fun text(input: TextView) = input.text?.toString().orEmpty().trim()
+
+    private fun updateContactButtons() = with(binding) {
+        buttonCall.isVisible = text(inputPhone).isNotEmpty()
+        buttonEmail.isVisible = text(inputEmail).isNotEmpty()
+        buttonWeb.isVisible = text(inputWebsite).isNotEmpty()
+    }
+
+    private fun launch(intent: Intent) {
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, R.string.no_app_for_action, Toast.LENGTH_SHORT).show()
         }
     }
 

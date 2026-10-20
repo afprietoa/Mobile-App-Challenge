@@ -1,5 +1,6 @@
 package com.unal.reto8.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -69,5 +70,10 @@ class CompanyListActivity : AppCompatActivity() {
         }
     }
 
-    private fun openForm(company: Company?) { /* Fase 4 */ }
+    private fun openForm(company: Company?) {
+        startActivity(
+            Intent(this, CompanyFormActivity::class.java)
+                .putExtra(CompanyFormActivity.EXTRA_COMPANY_ID, company?.id ?: 0L)
+        )
+    }
 }

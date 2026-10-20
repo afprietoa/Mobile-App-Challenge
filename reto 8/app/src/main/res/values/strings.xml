@@ -7,6 +7,22 @@
     <string name="action_add">Agregar empresa</string>
     <string name="action_delete">Eliminar</string>
 
+    <string name="form_title_new">Nueva empresa</string>
+    <string name="form_title_edit">Editar empresa</string>
+    <string name="hint_name">Nombre de la empresa</string>
+    <string name="hint_website">Página web</string>
+    <string name="hint_phone">Teléfono de contacto</string>
+    <string name="hint_email">Email de contacto</string>
+    <string name="hint_products">Productos y servicios</string>
+    <string name="label_classification">Clasificación</string>
+    <string name="save">Guardar</string>
+    <string name="error_required">Obligatorio</string>
+    <string name="error_invalid">Formato no válido</string>
+    <string name="error_classification">Elige al menos una clasificación</string>
+    <string name="saved">Empresa guardada</string>
+    <string name="save_failed">No se pudo guardar</string>
+    <string name="load_failed">No se encontró la empresa</string>
+
     <string name="class_consulting">Consultoría</string>
     <string name="class_custom">Desarrollo a la medida</string>
     <string name="class_factory">Fábrica de software</string>

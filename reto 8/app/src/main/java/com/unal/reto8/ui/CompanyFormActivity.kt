@@ -1,9 +1,13 @@
 package com.unal.reto8.ui
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -48,6 +52,17 @@ class CompanyFormActivity : AppCompatActivity() {
         setTitle(if (companyId == 0L) R.string.form_title_new else R.string.form_title_edit)
 
         binding.buttonSave.setOnClickListener { save() }
+
+        // Eliminar solo existe al editar una empresa ya guardada.
+        if (companyId != 0L) {
+            addMenuProvider(object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) =
+                    menuInflater.inflate(R.menu.form_menu, menu)
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    if (menuItem.itemId == R.id.action_delete) { confirmDelete(); true } else false
+            })
+        }
 
         // Al rotar, las vistas con id restauran lo escrito: solo se carga de la BD la primera vez.
         if (companyId != 0L && savedInstanceState == null) loadCompany()
@@ -124,6 +139,19 @@ class CompanyFormActivity : AppCompatActivity() {
                 } else {
                     binding.buttonSave.isEnabled = true
                     Toast.makeText(this, R.string.save_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun confirmDelete() {
+        DeleteConfirmation.show(this, readForm()) {
+            io.execute {
+                repository.delete(companyId)
+                runOnUiThread {
+                    if (isDestroyed) return@runOnUiThread
+                    Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show()
+                    finish()
                 }
             }
         }

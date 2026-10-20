@@ -2,6 +2,7 @@ package com.unal.reto8.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -39,7 +40,7 @@ class CompanyListActivity : AppCompatActivity() {
         }
 
         repository = SqliteCompanyRepository(CompanyDbHelper(applicationContext))
-        adapter = CompanyAdapter(onClick = ::openForm, onDelete = { /* Fase 5 */ })
+        adapter = CompanyAdapter(onClick = ::openForm, onDelete = ::confirmDelete)
         binding.companiesList.layoutManager = LinearLayoutManager(this)
         binding.companiesList.adapter = adapter
         binding.fabAdd.setOnClickListener { openForm(null) }
@@ -66,6 +67,19 @@ class CompanyListActivity : AppCompatActivity() {
                 binding.emptyView.setText(
                     if (f == CompanyFilter()) R.string.list_empty else R.string.list_empty_filtered
                 )
+            }
+        }
+    }
+
+    private fun confirmDelete(company: Company) {
+        DeleteConfirmation.show(this, company) {
+            io.execute {
+                repository.delete(company.id) // si ya no existía, igual se refresca la lista
+                runOnUiThread {
+                    if (isDestroyed) return@runOnUiThread
+                    Toast.makeText(this, R.string.deleted, Toast.LENGTH_SHORT).show()
+                    reload()
+                }
             }
         }
     }

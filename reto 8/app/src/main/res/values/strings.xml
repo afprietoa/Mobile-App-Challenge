@@ -23,6 +23,12 @@
     <string name="save_failed">No se pudo guardar</string>
     <string name="load_failed">No se encontró la empresa</string>
 
+    <string name="delete_title">¿Eliminar empresa?</string>
+    <string name="delete_message">Se eliminará «%s» del directorio. Esta acción no se puede deshacer.</string>
+    <string name="delete_confirm">Eliminar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="deleted">Empresa eliminada</string>
+
     <string name="class_consulting">Consultoría</string>
     <string name="class_custom">Desarrollo a la medida</string>
     <string name="class_factory">Fábrica de software</string>

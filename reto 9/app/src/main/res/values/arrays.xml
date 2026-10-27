@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="category_values">
+        <item>HOSPITAL</item>
+        <item>PHARMACY</item>
+        <item>ATTRACTION</item>
+        <item>MUSEUM</item>
+        <item>RESTAURANT</item>
+        <item>PARK</item>
+    </string-array>
+    <string-array name="category_labels">
+        <item>@string/cat_hospital</item>
+        <item>@string/cat_pharmacy</item>
+        <item>@string/cat_attraction</item>
+        <item>@string/cat_museum</item>
+        <item>@string/cat_restaurant</item>
+        <item>@string/cat_park</item>
+    </string-array>
+    <string-array name="category_defaults">
+        <item>HOSPITAL</item>
+        <item>ATTRACTION</item>
+    </string-array>
+</resources>

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Puntos cercanos</string>
+
+    <string name="search_hint">Buscar dirección</string>
+    <string name="action_locate">Mi ubicación</string>
+    <string name="action_refresh">Actualizar</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="settings_title">Ajustes</string>
+    <string name="you_are_here">Estás aquí</string>
+    <string name="retry">Reintentar</string>
+    <string name="allow">Permitir</string>
+    <string name="settings">Ajustes</string>
+
+    <string name="permission_rationale">Necesitamos tu ubicación para mostrar los lugares cercanos.</string>
+    <string name="permission_denied">Sin permiso de ubicación no podemos mostrar lugares cercanos. Puedes buscar una dirección o activarlo en Ajustes.</string>
+    <string name="location_unavailable">No se pudo obtener la ubicación. Revisa que el GPS esté activo.</string>
+    <string name="address_not_found">No se encontró esa dirección.</string>
+    <string name="no_categories_selected">Selecciona al menos una categoría en Ajustes.</string>
+    <string name="no_pois_in_radius">No hay lugares en este radio. Prueba con uno mayor.</string>
+    <string name="error_no_network">Sin conexión a internet.</string>
+    <string name="error_timeout">La consulta tardó demasiado.</string>
+    <string name="error_server_busy">Servicio ocupado, intenta en un momento.</string>
+    <string name="error_bad_response">No se pudo leer la respuesta del servicio.</string>
+    <plurals name="poi_count">
+        <item quantity="one">%1$d lugar en %2$d km</item>
+        <item quantity="other">%1$d lugares en %2$d km</item>
+    </plurals>
+
+    <string name="pref_search_title">Búsqueda</string>
+    <string name="pref_radius_title">Radio de búsqueda (km)</string>
+    <string name="pref_radius_summary">Distancia máxima desde tu posición</string>
+    <string name="pref_categories_title">Categorías</string>
+
+    <string name="cat_hospital">Hospital</string>
+    <string name="cat_pharmacy">Farmacia</string>
+    <string name="cat_attraction">Lugar turístico</string>
+    <string name="cat_museum">Museo</string>
+    <string name="cat_restaurant">Restaurante</string>
+    <string name="cat_park">Parque</string>
+</resources>

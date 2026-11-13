@@ -216,7 +216,9 @@ class MapActivity : AppCompatActivity() {
         viewModel.origin = point
         viewModel.address = address
         binding.toolbar.subtitle = address ?: formatCoords(point)
-        binding.map.controller.animateTo(point)
+        // Se muestra ya el punto y el radio, sin esperar a la red; los POIs llegan después.
+        viewModel.lastResult = emptyList()
+        render(point, settings.radiusKm, fit = true, showCounter = false)
         if (address == null) resolveAddress(point)
         refresh()
     }
@@ -294,7 +296,7 @@ class MapActivity : AppCompatActivity() {
         }
     }
 
-    private fun render(origin: GeoPoint, radiusKm: Int, fit: Boolean) {
+    private fun render(origin: GeoPoint, radiusKm: Int, fit: Boolean, showCounter: Boolean = true) {
         val map = binding.map
         map.overlays.removeAll(drawn.toSet())
         drawn.clear()
@@ -306,11 +308,15 @@ class MapActivity : AppCompatActivity() {
 
         val count = viewModel.lastResult.size
         binding.counter.text = resources.getQuantityString(R.plurals.poi_count, count, count, radiusKm)
-        binding.counter.isVisible = true
+        binding.counter.isVisible = showCounter
         if (fit) {
-            // Se ajusta al círculo del radio (caja siempre no degenerada), tras el layout.
+            // Se ajusta al círculo del radio, sin animación (dos animaciones seguidas se cancelan
+            // entre sí y dejaban el mapa lejos del punto) y tras el layout para tener tamaño real.
             val box = BoundingBox.fromGeoPoints(circle.actualPoints)
-            map.post { map.zoomToBoundingBox(box, true, 80) }
+            map.post {
+                map.zoomToBoundingBox(box, false, 80)
+                map.controller.setCenter(origin)
+            }
         }
         map.invalidate()
     }

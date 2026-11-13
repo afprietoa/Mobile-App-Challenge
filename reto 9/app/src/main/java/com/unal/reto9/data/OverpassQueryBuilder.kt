@@ -15,6 +15,6 @@ object OverpassQueryBuilder {
                 it.osmKey, it.osmValue, radiusMeters, lat, lon
             )
         }
-        return "[out:json][timeout:25];\n(\n$clauses\n);\nout center tags $MAX_RESULTS;"
+        return "[out:json][timeout:15];\n(\n$clauses\n);\nout center tags $MAX_RESULTS;"
     }
 }

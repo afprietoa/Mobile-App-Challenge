@@ -24,7 +24,7 @@ object PoiMarkers {
         title = poi.name                                    // requisito del reto: mostrar el nombre
         snippet = "${map.context.getString(poi.category.label)} · ${formatDistance(poi.distanceMeters)}"
         setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-        icon = ContextCompat.getDrawable(map.context, R.drawable.ic_poi)
+        icon = ContextCompat.getDrawable(map.context, poi.category.icon)
     }
 
     /** Círculo de [radiusMeters] alrededor del origen. */

@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Tutor IA</string>
+
+    <string name="input_hint">Escribe tu pregunta</string>
+    <string name="action_send">Enviar</string>
+    <string name="action_stop">Detener</string>
+    <string name="action_retry">Reintentar</string>
+    <string name="typing">Escribiendo…</string>
+
+    <string name="menu_new_chat">Nueva conversación</string>
+    <string name="menu_templates">Plantillas de prompt</string>
+    <string name="menu_settings">Ajustes</string>
+
+    <string name="empty_title">Tutor de Desarrollo Móvil</string>
+    <string name="empty_subtitle">Pregúntame sobre Android y Kotlin o prueba una sugerencia:</string>
+    <string name="suggestion_1">¿Qué es un ViewModel?</string>
+    <string name="suggestion_2">Diferencia entre Activity y Fragment</string>
+    <string name="suggestion_3">Cómo hago una petición HTTP en Kotlin</string>
+
+    <string name="missing_key_notice">Falta la API key. Agrega GEMINI_API_KEY en local.properties y recompila.</string>
+
+    <string name="error_no_network">Sin conexión a internet. Revisa tu red e inténtalo de nuevo.</string>
+    <string name="error_timeout">El modelo tardó demasiado en responder.</string>
+    <string name="error_unauthorized">La API key es inválida o no tiene permisos.</string>
+    <string name="error_rate_limited">Se superó la cuota del servicio. Intenta más tarde.</string>
+    <string name="error_blocked">Contenido bloqueado por los filtros de seguridad del modelo.</string>
+    <string name="generated_image">Imagen generada por IA</string>
+    <string name="error_server">El servicio no está disponible en este momento. Intenta más tarde.</string>
+    <string name="error_bad_json">El servicio devolvió una respuesta inesperada.</string>
+    <string name="error_missing_key">No hay API key configurada.</string>
+
+    <string name="template_dialog_title">Plantillas de prompt</string>
+    <string name="template_input_title">%1$s</string>
+    <string name="action_ok">Aceptar</string>
+    <string name="action_cancel">Cancelar</string>
+
+    <string name="settings_title">Ajustes del tutor</string>
+    <string name="settings_system_prompt">Instrucciones del sistema</string>
+    <string name="settings_temperature">Temperatura (0 a 1)</string>
+    <string name="settings_save">Guardar</string>
+    <string name="settings_reset">Restaurar</string>
+
+    <string name="action_copy">Copiar</string>
+    <string name="action_share">Compartir</string>
+    <string name="copied">Respuesta copiada</string>
+    <string name="share_title">Compartir respuesta</string>
+    <string name="role_user">Tú</string>
+    <string name="role_model">Tutor IA</string>
+</resources>

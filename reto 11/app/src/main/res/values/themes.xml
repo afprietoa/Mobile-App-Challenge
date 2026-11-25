@@ -1,0 +1,4 @@
+<resources>
+    <style name="Base.Theme.Reto11" parent="Theme.Material3.DayNight.NoActionBar" />
+    <style name="Theme.Reto11" parent="Base.Theme.Reto11" />
+</resources>

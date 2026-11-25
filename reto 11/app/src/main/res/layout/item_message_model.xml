@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingEnd="48dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:id="@+id/bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:background="@drawable/bg_bubble_model"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/messageImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/generated_image"
+            android:scaleType="fitCenter"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+    </LinearLayout>
+</FrameLayout>

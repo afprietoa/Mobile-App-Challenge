@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Puntos Posconsumo</string>
+
+    <string name="filter_municipality">Municipio</string>
+    <string name="filter_all">Todos</string>
+    <string name="filter_text">Buscar (nombre, dirección, residuo)</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_clear">Limpiar filtros</string>
+    <string name="action_retry">Reintentar</string>
+
+    <string name="results_count">Mostrando %1$d de %2$d resultados</string>
+    <string name="empty_results">Sin resultados para estos filtros</string>
+    <string name="loading_more">Cargando más resultados</string>
+    <string name="loading_results">Cargando resultados</string>
+
+    <string name="error_no_network">Sin conexión a internet. Revisa tu red e inténtalo de nuevo.</string>
+    <string name="error_timeout">El servicio tardó demasiado en responder.</string>
+    <string name="error_server">El servicio no está disponible en este momento. Intenta más tarde.</string>
+    <string name="error_bad_json">El servicio devolvió una respuesta inesperada.</string>
+
+    <string name="detail_title">Detalle del punto</string>
+    <string name="detail_municipality">Municipio</string>
+    <string name="detail_department">Departamento</string>
+    <string name="detail_address">Dirección</string>
+    <string name="detail_program">Programa de recolección</string>
+    <string name="detail_waste">Residuos que se reciben</string>
+    <string name="detail_dane">Código DANE</string>
+    <string name="detail_not_available">No disponible</string>
+    <string name="action_directions">Cómo llegar</string>
+    <string name="action_copy_address">Copiar dirección</string>
+    <string name="address_copied">Dirección copiada</string>
+    <string name="no_maps_app">No hay una aplicación de mapas instalada</string>
+</resources>
